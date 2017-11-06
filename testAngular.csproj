@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\models\open-end-question.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\xregexpResult.model.ts" />
   </ItemGroup>
 
