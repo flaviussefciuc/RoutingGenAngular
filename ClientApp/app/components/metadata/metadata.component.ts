@@ -1,5 +1,8 @@
 ﻿import { Component, OnInit} from '@angular/core';
 import * as XRegExp from 'xregexp';
+import { OpenEndQuestion } from '../../models/open-end-question.model';
+import { QuestionType} from '../../enums/question-type.enum';
+
 
 @Component({
     selector: 'metadata',
@@ -12,14 +15,31 @@ export class MetadataComponent implements OnInit{
     public matches: any[];
     public startMatch: number;
     public endMatch: number;
+    public questionList: OpenEndQuestion[];
+    public tempQuestion: OpenEndQuestion;
+    QuestionType = QuestionType;
 
-
-    public categorical = XRegExp(`(?<questionName> [a-zA-Z]+([a-zA-Z0-9_])*) -? #questionName
+    public openEnd = XRegExp(`(?<questionName> [a-zA-Z]+([a-zA-Z0-9_])*) -? #questionName
     (\\s*)
     (?<questionText> ((\"[^"]*\")|(-))) -? #questionText
     \\s*text\\s*(\\[(\\d)*\\s*\\.\\.\\s*(\\d)*\\])?\\s*;
     `, 'gx');
 
+    public categorical = XRegExp(`[a-zA-Z]+([a-zA-Z0-9_])*
+    \\s*
+    ((\\"[^"]*\")|(-))
+    \\s*
+    (\\[(?:\[??[^\\[]*?\\])){0,1}
+    \\s*
+    categorical
+    \\s*
+    \\[\\d?\\.\\.\\d?\\]
+    \\s*
+    \\{
+    \\s*
+    (_\\d*\\s+\\"[^"]*\\"\\s*((fix|other|exclusive)*\\s*)*,?\\s*)*\\}
+    \\s*(ran|rot|asc|desc)?\\s*;
+    `,'gx');
     public date = XRegExp(
         `(?<year>  [0-9]{4} ) -?  # year
      (?<month> [0-9]{2} ) -?  # month
@@ -30,25 +50,32 @@ export class MetadataComponent implements OnInit{
     }
     public matchExp() {
 
+        this.questionList = new Array<OpenEndQuestion>();
+
+        this.matches = XRegExp.match(this.textAreaInput, this.openEnd, 'all');        
         
-        //this.match = XRegExp.exec(this.textAreaInput, this.date);        
-
-        this.matches = XRegExp.match(this.textAreaInput, this.date, 'all');
-
         
         for (var result in this.matches) {
-            this.match = XRegExp.exec(this.matches[result], this.date);
-            this.startMatch = this.textAreaInput.search(this.matches[result]);
-            this.endMatch = this.startMatch + this.matches[result].length;
-        }
-        this.result = this.matches[0].year;
-        this.result = this.matches[1].year;
-        //if (this.match)
-        //    this.result = this.match.questionName;
-        //if (this.match)
-        //    this.result = this.match.year;
+            this.match = XRegExp.exec(this.matches[result], this.openEnd);
 
+            this.tempQuestion = new OpenEndQuestion;
+            this.tempQuestion.name = this.match.questionName;
+            this.tempQuestion.questionText = this.match.questionText;
+            this.tempQuestion.type = 2;
+            this.tempQuestion.posStart = this.textAreaInput.indexOf(this.matches[result]);
+            this.tempQuestion.posEnd = this.tempQuestion.posStart + this.matches[result].length;
+
+
+            this.questionList.push(this.tempQuestion);
+   
+        }
         
 
+        this.matches = XRegExp.match(this.textAreaInput, this.categorical, 'all'); 
+        for (var result in this.matches) {
+            this.match = XRegExp.exec(this.matches[result], this.categorical);
+
+        }
+        
     }
 }

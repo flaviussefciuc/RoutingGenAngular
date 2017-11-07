@@ -6,6 +6,25 @@
           ></textarea>
 <button type="button" class="btn btn-primary btn-lg btn-block" (click)="matchExp()" >Process</button>
 
-<div *ngIf="match">Year: {{match.year}}</div>
-<div *ngIf="match">Month: {{match.month}}</div>
-<div *ngIf="match">Day: {{match.day}}</div>
+
+<table class='table' *ngIf="questionList">
+    <thead>
+        <tr>
+            <th>Question Name</th>
+            <th>Question Type</th>
+            <th>Question Text</th>
+            <th>Start position</th>
+            <th>End position</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let question of questionList">
+            <td>{{ question.name }}</td>
+            <td>{{ QuestionType[question.type] }}</td>
+            <td>{{ question.questionText }}</td>
+            <td>{{ question.posStart }}</td>
+            <td>{{ question.posEnd }}</td>
+        </tr>
+    </tbody>
+</table>
+
