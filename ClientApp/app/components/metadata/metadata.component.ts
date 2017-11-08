@@ -25,9 +25,9 @@ export class MetadataComponent implements OnInit{
     \\s*text\\s*(\\[(\\d)*\\s*\\.\\.\\s*(\\d)*\\])?\\s*;
     `, 'gx');
 
-    public categorical = XRegExp(`[a-zA-Z]+([a-zA-Z0-9_])*
+    public categorical = XRegExp(`(?<questionName> [a-zA-Z]+([a-zA-Z0-9_])*) -? #questionName
     \\s*
-    ((\\"[^"]*\")|(-))
+    (?<questionText> ((\\"[^"]*\")|(-))) -? #questionText
     \\s*
     (\\[(?:\[??[^\\[]*?\\])){0,1}
     \\s*
@@ -37,9 +37,11 @@ export class MetadataComponent implements OnInit{
     \\s*
     \\{
     \\s*
-    (_\\d*\\s+\\"[^"]*\\"\\s*((fix|other|exclusive)*\\s*)*,?\\s*)*\\}
+    (?<answerList>(_\\d*\\s+\\"[^"]*\\"\\s*((fix|other|exclusive)*\\s*)*,?\\s*)*) -? #answerList
+    \\}
     \\s*(ran|rot|asc|desc)?\\s*;
-    `,'gx');
+    `, 'gx');
+
     public date = XRegExp(
         `(?<year>  [0-9]{4} ) -?  # year
      (?<month> [0-9]{2} ) -?  # month
