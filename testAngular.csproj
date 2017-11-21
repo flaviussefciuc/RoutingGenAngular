@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
   </ItemGroup>
 
@@ -30,6 +31,10 @@
     <TypeScriptCompile Include="ClientApp\app\models\open-end-question.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\precode.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\xregexpResult.model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
@@ -61,5 +66,5 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-
+  
 </Project>

@@ -1,6 +1,9 @@
 ﻿import { Component, OnInit} from '@angular/core';
 import * as XRegExp from 'xregexp';
+
+import { Question } from '../../models/question.model';
 import { OpenEndQuestion } from '../../models/open-end-question.model';
+import { CategoricalQuestion } from '../../models/categorical-question.model';
 import { QuestionType} from '../../enums/question-type.enum';
 
 
@@ -16,7 +19,8 @@ export class MetadataComponent implements OnInit{
     public startMatch: number;
     public endMatch: number;
     public questionList: OpenEndQuestion[];
-    public tempQuestion: OpenEndQuestion;
+    public tempQuestion: Question;
+    public tempCategoricalQuestion: CategoricalQuestion;
     QuestionType = QuestionType;
 
     public openEnd = XRegExp(`(?<questionName> [a-zA-Z]+([a-zA-Z0-9_])*) -? #questionName
@@ -33,7 +37,9 @@ export class MetadataComponent implements OnInit{
     \\s*
     categorical
     \\s*
-    \\[\\d?\\.\\.\\d?\\]
+    \\[
+    (?<lowerLimit> \\d?) -? #lowerLimit
+    \\.\\.\\d?\\]
     \\s*
     \\{
     \\s*
@@ -52,8 +58,9 @@ export class MetadataComponent implements OnInit{
     }
     public matchExp() {
 
-        this.questionList = new Array<OpenEndQuestion>();
+        this.questionList = new Array<Question>();
 
+        //Open end:
         this.matches = XRegExp.match(this.textAreaInput, this.openEnd, 'all');        
         
         
@@ -72,12 +79,34 @@ export class MetadataComponent implements OnInit{
    
         }
         
-
+        //Categorical:
         this.matches = XRegExp.match(this.textAreaInput, this.categorical, 'all'); 
+
         for (var result in this.matches) {
             this.match = XRegExp.exec(this.matches[result], this.categorical);
+            this.tempCategoricalQuestion = new CategoricalQuestion;
+            this.tempCategoricalQuestion.name = this.match.questionName;
+            this.tempCategoricalQuestion.questionText = this.match.questionText;
+            this.tempCategoricalQuestion.type = 1;
+            this.tempCategoricalQuestion.posStart = this.textAreaInput.indexOf(this.matches[result]);
+            this.tempCategoricalQuestion.posEnd = this.tempCategoricalQuestion.posStart + this.matches[result].length;
+            this.tempCategoricalQuestion.lowerLimit = this.match.lowerLimit;
+
+
+            this.questionList.push(this.tempCategoricalQuestion);
 
         }
-        
+
+        //Sort QuestionList:
+        this.questionList.sort((n1, n2) => {
+            if (n1.posStart < n2.posStart)
+            {
+                return -1;
+            }
+            if (n1.posStart > n2.posStart) {
+                return 1;
+            }
+            return 0;
+        });
     }
 }
