@@ -24,12 +24,14 @@
   <ItemGroup>
     <None Remove="ClientApp\app\models\categorical-question.model.ts" />
     <None Remove="ClientApp\app\models\precode.model.ts" />
+    <None Remove="ClientApp\app\models\question-type-regex.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\models\categorical-question.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\open-end-question.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\precode.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\models\question-type-regex.ts" />
     <TypeScriptCompile Include="ClientApp\app\models\xregexpResult.model.ts" />
   </ItemGroup>
 
